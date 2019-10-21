@@ -28,7 +28,7 @@ def on_member_joined_channel( **payload ):
     web_client.chat_postMessage( channel = channel_id, text = "Welcome to my channel!" )
 
 # post　message
-client = slack.WebClient( token= "xoxb-701987401137-787500056018-V8FtjryUaTBoh5l27ZVzO5TB" )
+client = slack.WebClient( token= "xoxb-xxxxxxxxxxxxx" )
 response = client.chat_postMessage(
 channel='#201910_test',
 as_user=True,
