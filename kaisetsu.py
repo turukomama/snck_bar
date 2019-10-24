@@ -4,8 +4,8 @@ import schedule
 import time
 
 # Set API token
-bot_slack_token = 'xoxb-701987401137-800193405248-QSO0kAlWZjshxuEfmsCKFrsa' # os.environ['SLACK_API_TOKEN']
-user_slack_token = 'xoxp-701987401137-776207167766-802402565478-79ad8d31854e626277f1e564edd5d90d'
+bot_slack_token = 'xxx' # os.environ['SLACK_API_TOKEN']
+user_slack_token = 'xxx'
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
@@ -43,15 +43,14 @@ def on_message( **payload ):
     
     if 'Hello' in data.get( 'text', [] ):
         web_client.chat_postMessage( channel = channel_id, text = f"Hi <@{user_id}>!" )
-    
+
+    if schedule.every().day.at("16:05"):
+        web_client.chat_postMessage( channel = channel_id, text = f"Hi <@{user_id}>!" )
+
+
     if '!kickme' in data.get( 'text', [] ):
         web_client.channels_kick( channel = channel_id, user = user_id )
 
-def job():
-    print("いらっしゃい")
-
-
-schedule.every().day.at("10:05").do(job)
 
 while True:
     schedule.run_pending()
