@@ -3,8 +3,6 @@ import slack
 
 import random
 
-#omikuji fortuneと発言すると結果を返す########################################
-
 @slack.RTMClient.run_on(event='message')
 def fortune(**payload):
     data = payload['data']
@@ -12,11 +10,21 @@ def fortune(**payload):
     rtm_client = payload['rtm_client']
     
     # textはreplyなどには含まれないので、subtypeがなし=親メッセージかを確認する
-    if 'subtype' not in data and 'fortune' in data['text']:
+    if 'subtype' not in data and '占ってください' in data['text']:
         channel_id = data['channel']
         thread_ts = data['ts']
         user = data['user']
-        fortunes = [ '大吉', '吉', '凶', '中吉', '小吉' ]
+        fortunes = [ '今日の鳥類は！「鶴」よ！ラッキープレイスは「会社」よ。',
+         '今日の鳥類は！「インコ」よ！ラッキープレイスは「自宅」よ。',
+          '今日の鳥類は！「カラス」よ！ラッキープレイスは「ごみ捨て場」よ。',
+           '今日の鳥類は！「フクロウ」よ！ラッキープレイスは「樹海」よ。',
+            '今日の鳥類は！「ペンギン」よ！ラッキープレイスは「海」よ。' ,
+            '今日の鳥類は！「ドードー鳥」よ！ラッキープレイスは「マダガスカル」よ。' ,
+            '今日の鳥類は！「不死鳥」よ！ラッキープレイスは「火山」よ。' ,
+            '今日の鳥類は！「フラミンゴ」よ！ラッキープレイスは「二丁目」よ。' ,
+            '今日の鳥類は！「ククルカン」よ！ラッキープレイスは「チチェン・イッツァ」よ。' ,
+            '今日の鳥類は！「八咫烏」よ！ラッキープレイスは「サッカー場」よ。'
+            ]
         num = random.randint( 0, len( fortunes ) - 1 )
         result = fortunes[ num ]
         # if num == 0:
