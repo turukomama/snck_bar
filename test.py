@@ -1,9 +1,11 @@
+# テンプレート（いじらない！）
+
 import os
 import slack
 
 # Set API token
-bot_slack_token = '' # os.environ['SLACK_API_TOKEN']
-user_slack_token = ''
+bot_slack_token = 'xoxb-xxxxxxxxxxx' # os.environ['SLACK_API_TOKEN']
+user_slack_token = 'xoxp-xxxxxxxxxxxxxxxx'
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
@@ -12,8 +14,6 @@ web_client = slack.WebClient( token = user_slack_token )
 #
 # Declare event hook methods
 #
-
-
 
 # on user has joined a channel
 @slack.RTMClient.run_on( event = 'member_joined_channel' )

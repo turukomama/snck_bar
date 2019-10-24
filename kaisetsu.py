@@ -4,8 +4,9 @@ import schedule
 import time
 
 # Set API token
-bot_slack_token = 'xxx' # os.environ['SLACK_API_TOKEN']
-user_slack_token = 'xxx'
+# bot_slack_token = 'xoxb-xxxxxxxxxxx' user_slack_token ='xoxp-xxxxxxxxxxxxxxxx'
+bot_slack_token = 'xoxb-xxxxxxxxxxx' # os.environ['SLACK_API_TOKEN']
+user_slack_token = 'xoxp-xxxxxxxxxxxxxxxx'
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
