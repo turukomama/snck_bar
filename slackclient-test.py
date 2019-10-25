@@ -4,10 +4,11 @@ import schedule
 import time
 import random
 
-# Set API token 
-# bot_slack_token = 'xoxb-xxxxxxxxxxx' user_slack_token ='xoxp-xxxxxxxxxxxxxxxx'
-bot_slack_token = 'xoxb-xxxxxxxxxxx' # os.environ['SLACK_API_TOKEN']
-user_slack_token = 'xoxp-xxxxxxxxxxxxxxxx'
+SETTINGS = turuko.load( open( 'settings.turuko' ) )
+
+# Set API token
+bot_slack_token = 'xoxp_token' # os.environ['SLACK_API_TOKEN']
+user_slack_token = 'xoxb_token'
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
