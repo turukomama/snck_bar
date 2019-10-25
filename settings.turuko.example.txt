@@ -1,0 +1,7 @@
+[slack]
+
+xoxp_token = "xoxp-"
+
+xoxb_token = "xoxb-"
+
+
