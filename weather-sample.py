@@ -3,8 +3,13 @@ import slack
 import requests
 
 # Set API token
+<<<<<<< HEAD
 bot_slack_token = 'xoxb' # os.environ['SLACK_API_TOKEN']
 user_slack_token = 'xoxp'
+=======
+bot_slack_token = '' # os.environ['SLACK_API_TOKEN']
+user_slack_token = ''
+>>>>>>> 02295b94ba56efce8593157121fa32cc656631e5
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
