@@ -1,8 +1,0 @@
-[slack]
-
-xoxp_token = " "
-
-xoxb_token = " "
-
-
-channel = ' '
