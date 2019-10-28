@@ -3,12 +3,13 @@ import slack
 import requests
 import random
 import datetime
+import setting
 
 from bs4 import BeautifulSoup
 
 # Set API token
-bot_slack_token = "xoxb"
-user_slack_token = "xoxp"
+bot_slack_token = settings.xoxb_token
+user_slack_token = settings.xoxp_token
 
 
 # Create both rtm client and web client
