@@ -25,7 +25,7 @@ hour_time = now.hour
 # close = datetime(now.year, now.month, now.day, 18, 0, 0)
 # diff = close - now
 
-# 天気機能
+# Get Weather
 def is_today_rainy():
     url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=130010'
     api_data = requests.get(url).json()
@@ -40,7 +40,7 @@ def is_today_rainy():
             return False
 
 
-#　ニュース機能
+#　Get News
 def is_today_news():	
     r = requests.get("https://news.yahoo.co.jp/")
 	
@@ -53,7 +53,7 @@ def is_today_news():
         return news_list
 
 
-# 鳥おみくじ機能
+# Bird fortune list
 def is_today_fortunes():
         fortunes = [ '今日の鳥類は！「鶴」よ！ラッキープレイスは「会社」よ。',
          '今日の鳥類は！「インコ」よ！ラッキープレイスは「自宅」よ。',
@@ -69,16 +69,8 @@ def is_today_fortunes():
         num = random.randint( 0, len( fortunes ) - 1 )
         result = fortunes[ num ]
         return result
-        # if num == 0:
-        #     kichi = "大吉"
-        # elif num == 1:
-        #     kichi = "吉"
-        # elif num == 2:
-        #     kichi = "凶"
-        # thread_tsを設定することでスレッドでのリプライになる
 
-
-# お酒おみくじ機能
+# Alcohol fortune list
 def is_today_alcohols():
         alcohols = [ '今日のおすすめはビールよ',
                     '今日のおすすめはウィスキーよ',
@@ -96,16 +88,8 @@ def is_today_alcohols():
         num = random.randint( 0, len( alcohols ) - 1 )
         result = alcohols[ num ]
         return result
-        # if num == 0:
-        #     kichi = "大吉"
-        # elif num == 1:
-        #     kichi = "吉"
-        # elif num == 2:
-        #     kichi = "凶"
-        # thread_tsを設定することでスレッドでのリプライになる
 
-
-# おしゃべり機能
+# Talking list
 def oshaberi():
         oshaberies = [ '今忙しいのよ',
         'いい子で待ってなさい',
@@ -140,51 +124,51 @@ def on_message( **payload ):
     user_id = data[ 'user' ]
     
     
-    # １．雨ふる？
+    # １．What's the chance of rain today?
     if '!雨降る?' in data.get( 'text', [] ):
-        # ２．天気情報を取得する
+        # ２．Get Weather
         is_rain = is_today_rainy()
-        # ３．今日が雨か？
+        # ３．I wonder if it will rain today?
         if( is_rain ):
-            # ４．３．が雨ならメッセージ
+            # ４．３．It looks like rain
             msg_weather1 = "雨が降りそうよ、傘持ってるの？"
             web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
         else:
             msg_weather2 ="大丈夫そうよ"
             web_client.chat_postMessage( channel = channel_id, text = msg_weather2 )
 
-    # 1.ニュース
+    # 1.Get News
     if  '!ニュース' in data.get( 'text', [] ) and 18 <= hour_time <= 24: 
-        # ２．ニュース情報を取得する
+        # ２．Get News
         is_news = is_today_news()
-        # ３．今日のニュースをPOST
+        # ３．Post information
         web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
         web_client.chat_postMessage( channel = channel_id, text = is_news )
    
 
-    # 1.鳥おみくじ
+    # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ) and 18 <= hour_time <= 24:
-        # 2.おみくじ結果を取得
+        # 2.draw a fortune slip
         is_fortunes = is_today_fortunes()
-        # 3.おみくじ結果をPOST
+        # 3.Results
         web_client.chat_postMessage( channel = channel_id, text = is_fortunes )
 
-    # 1.お酒おみくじ
+    # 1.Alcohol fortune
     if '!お酒' in data.get( 'text', [] ) and 18 <= hour_time <= 24:    
-        # 2.おみくじ結果を取得
+        # 2.draw a fortune slip
         is_alcohols = is_today_alcohols()
-        # 3.おみくじ結果をPOST
+        # 3.Results
         web_client.chat_postMessage( channel = channel_id, text = is_alcohols )
 
-    # 1.おしゃべり
+    # 1.Talking
     if '!つる子ママ' in data.get( 'text', [] ) and 18 <= hour_time <= 24:  
-        # 2.おみくじ結果を取得
+        # 2.draw a fortune slip
         is_oshaberi = oshaberi()
-        # 3.おみくじ結果をPOST
+        # 3.Results
         web_client.chat_postMessage( channel = channel_id, text = is_oshaberi )
 
 
-    #キック機能
+    # Removes a user from a channel
     if '年齢' in data.get( 'text', [] ) and 18 <= hour_time <= 24:
         web_client.channels_kick( channel = channel_id, user = user_id )
 
