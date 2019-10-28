@@ -7,8 +7,8 @@ import datetime
 from bs4 import BeautifulSoup
 
 # Set API token
-bot_slack_token = "xoxb-701987401137-800193405248-J2SLsDMy3RhQ36XO63qE2Woy"
-user_slack_token = "xoxp-701987401137-776207167766-808596515045-19bb7220ed95dd72ac34137f2301088b"
+bot_slack_token = "xoxb"
+user_slack_token = "xoxp"
 
 
 # Create both rtm client and web client
