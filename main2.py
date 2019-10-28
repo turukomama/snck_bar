@@ -16,13 +16,16 @@ user_slack_token = settings.xoxp_token
 rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
 
+
 #
 # Declare event hook methods
 #
 
+
 #営業時間
 open_time = 18
 close_time = 24
+
 
 #時間
 def is_today_time():
@@ -30,11 +33,13 @@ def is_today_time():
     hour_time = now.hour
     return hour_time
 
+
 # now = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
 # close = datetime(now.year, now.month, now.day, 18, 0, 0)
 # diff = close - now
 
-# 天気機能
+
+# Get Weather
 def is_today_rainy():
         url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=130010'
         api_data = requests.get(url).json()
@@ -49,7 +54,7 @@ def is_today_rainy():
                 return False
 
 
-#　ニュース機能
+#　Get News
 def is_today_news():	
     r = requests.get("https://news.yahoo.co.jp/")
 	
@@ -62,7 +67,7 @@ def is_today_news():
         return news_list
 
 
-# 鳥おみくじ機能
+# Bird fortune list
 def is_today_fortunes():
         fortunes = [
             '今日の鳥類は！「鶴」よ！ラッキープレイスは「会社」よ。',
@@ -75,7 +80,7 @@ def is_today_fortunes():
             '今日の鳥類は！「フラミンゴ」よ！ラッキープレイスは「二丁目」よ。' ,
             '今日の鳥類は！「ククルカン」よ！ラッキープレイスは「チチェン・イッツァ」よ。' ,
             '今日の鳥類は！「八咫烏」よ！ラッキープレイスは「サッカー場」よ。'
-        ]
+            ]
         num = random.randint( 0, len( fortunes ) - 1 )
         result = fortunes[ num ]
         return result
@@ -87,20 +92,22 @@ def is_today_fortunes():
         #     kichi = "凶"
         # thread_tsを設定することでスレッドでのリプライになる
 
-# お酒おみくじ機能
+
+# Alcohol fortune list
 def is_today_alcohols():
-        alcohols = [ '今日のおすすめはビールよ',
-                    '今日のおすすめはウィスキーよ',
-                    '今日のおすすめは赤ワインよ',
-                    '今日のおすすめは白ワインよ',
-                    '今日のおすすめは一刻者よ',
-                    '今のおすすめは水道水よ。アンタ飲みすぎよ！',
-                    '今日のおすすめはカシスオレンジよ',
-                    '今日のおすすめは鏡月よ',
-                    '今日のおすすめは魔王よ',
-                    '今日のおすすめは白鶴よ',
-                    '今日のおすすめはスピリタスよ',
-                    '今日のおすすめはドンペリニヨンよ',
+        alcohols = [
+            '今日のおすすめはビールよ',
+            '今日のおすすめはウィスキーよ',
+            '今日のおすすめは赤ワインよ',
+            '今日のおすすめは白ワインよ',
+            '今日のおすすめは一刻者よ',
+            '今のおすすめは水道水よ。アンタ飲みすぎよ！',
+            '今日のおすすめはカシスオレンジよ',
+            '今日のおすすめは鏡月よ',
+            '今日のおすすめは魔王よ',
+            '今日のおすすめは白鶴よ',
+            '今日のおすすめはスピリタスよ',
+            '今日のおすすめはドンペリニヨンよ',
             ]
         num = random.randint( 0, len( alcohols ) - 1 )
         result = alcohols[ num ]
@@ -114,20 +121,21 @@ def is_today_alcohols():
         # thread_tsを設定することでスレッドでのリプライになる
 
 
-# おしゃべり機能
+# Talking list
 def oshaberi():
-        oshaberies = [ '今忙しいのよ',
-        'いい子で待ってなさい',
-        'あら、いらっしゃい',
-        '何飲むの？',
-        '鶴は千年...あらヤダ！' ,
-        'キエェェェェェ！！' ,
-        'ご無沙汰ねぇ' ,
-        '注文は決まったの？' ,
-        '・・・・・(無視)' ,
-        'やっぱり福山雅治よねぇ～' ,
-        '飲み足りないから飲んでんの～♪' ,
-        '最近色気づいてきた？' 
+        oshaberies = [
+            '今忙しいのよ',
+            'いい子で待ってなさい',
+            'あら、いらっしゃい',
+            '何飲むの？',
+            '鶴は千年...あらヤダ！' ,
+            'キエェェェェェ！！' ,
+            'ご無沙汰ねぇ' ,
+            '注文は決まったの？' ,
+            '・・・・・(無視)' ,
+            'やっぱり福山雅治よねぇ～' ,
+            '飲み足りないから飲んでんの～♪' ,
+            '最近色気づいてきた？' 
             ]
         num = random.randint( 0, len( oshaberies ) - 1 )
         result = oshaberies[ num ]
@@ -148,71 +156,73 @@ def on_message( **payload ):
     channel_id = data[ 'channel' ]
     user_id = data[ 'user' ]
     
-    
-    # １．雨ふる？
+    # １．What's the chance of rain today?
     if '!雨降る?' in data.get( 'text', [] ):
-        # ２．天気情報を取得する
+        # ２．Get Weather
         is_rain = is_today_rainy()
-        # 2.時間取得
+        # 2. Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-            # ３．今日が雨か？
+            # ３．I wonder if it will rain today?
             if( is_rain ):
-                # ４．３．が雨ならメッセージ
+                # ４．３．It looks like rain
                 msg_weather1 = "雨が降りそうよ、傘持ってるの？"
                 web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
             else:
                 msg_weather2 ="大丈夫そうよ"
                 web_client.chat_postMessage( channel = channel_id, text = msg_weather2 )
 
-    # 1.ニュース
+    # 1.Get News
     if  '!ニュース' in data.get( 'text', [] ):
-        # 2.時間取得
+        # 2. Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-        # 3．ニュース情報を取得する
+        # 3．Get News
             is_news = is_today_news()
-            # 4．今日のニュースをPOST
+            # 4．Post information
             web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
             web_client.chat_postMessage( channel = channel_id, text = is_news )
    
-    # 1.鳥おみくじ
+    # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ):
-        # 2.時間取得
+        # 2.Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-            # 3.おみくじ結果を取得
+            # 3.draw a fortune slip
             is_fortunes = is_today_fortunes()
-            # 4.おみくじ結果をPOST
+            # 4.Results
             web_client.chat_postMessage( channel = channel_id, text = is_fortunes )
 
-    # 1.お酒おみくじ
+    # 1.Alcohol fortune
     if '!お酒' in data.get( 'text', [] ):    
-        # 2.時間取得
+        # 2.Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-            # 3.おみくじ結果を取得
+            # 3.draw a fortune slip
             is_alcohols = is_today_alcohols()
-            # 4.おみくじ結果をPOST
+            # 4.Results
             web_client.chat_postMessage( channel = channel_id, text = is_alcohols )
 
-    # 1.おしゃべり
+    # 1.Talking
     if '!つる子ママ' in data.get( 'text', [] ):  
-        # 2.時間取得
+        # 2.Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-            # 2.おみくじ結果を取得
+            # 2.draw a fortune slip
             is_oshaberi = oshaberi()
-            # 3.おみくじ結果をPOST
+            # 3.Results
             web_client.chat_postMessage( channel = channel_id, text = is_oshaberi )
 
 
-    #キック機能
+    #Removes a user from a channel
     if '年齢' in data.get( 'text', [] ):
-        # 1.時間取得
+        # 1.Get time
         is_time = is_today_time()
         if open_time <= is_time <= close_time:
-            # 2. キック
+            # 2. Removes a user from a channel
             web_client.channels_kick( channel = channel_id, user = user_id )
+
+
+
 
 rtm_client.start()
