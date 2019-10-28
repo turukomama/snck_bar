@@ -11,7 +11,6 @@ bot_slack_token = settings.xoxb_token
 user_slack_token = settings.xoxp_token
 
 
-
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
@@ -19,7 +18,9 @@ web_client = slack.WebClient( token = user_slack_token )
 #
 # Declare event hook methods
 #
-#天気
+
+
+# 天気機能
 def is_today_rainy():
     url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=130010'
     api_data = requests.get(url).json()
@@ -33,7 +34,8 @@ def is_today_rainy():
         else:
             return False
 
-#　ニュース
+
+#　ニュース機能
 def is_today_news():	
     r = requests.get("https://news.yahoo.co.jp/")
 	
@@ -45,7 +47,8 @@ def is_today_news():
 
         return news_list
 
-# おみくじ
+
+# 鳥おみくじ機能
 def is_today_fortunes():
         fortunes = [ '今日の鳥類は！「鶴」よ！ラッキープレイスは「会社」よ。',
          '今日の鳥類は！「インコ」よ！ラッキープレイスは「自宅」よ。',
@@ -70,18 +73,52 @@ def is_today_fortunes():
         # thread_tsを設定することでスレッドでのリプライになる
 
 
+# お酒おみくじ機能
+def is_today_alcohols():
+        alcohols = [ '今日のおすすめはビールよ',
+                    '今日のおすすめはウィスキーよ',
+                    '今日のおすすめは赤ワインよ',
+                    '今日のおすすめは白ワインよ',
+                    '今日のおすすめは一刻者よ',
+                    '今のおすすめは水道水よ。アンタ飲みすぎよ！',
+                    '今日のおすすめはカシスオレンジよ',
+                    '今日のおすすめは鏡月よ',
+                    '今日のおすすめは魔王よ',
+                    '今日のおすすめは白鶴よ',
+                    '今日のおすすめはスピリタスよ',
+                    '今日のおすすめはドンペリニヨンよ',
+            ]
+        num = random.randint( 0, len( alcohols ) - 1 )
+        result = alcohols[ num ]
+        return result
+        # if num == 0:
+        #     kichi = "大吉"
+        # elif num == 1:
+        #     kichi = "吉"
+        # elif num == 2:
+        #     kichi = "凶"
+        # thread_tsを設定することでスレッドでのリプライになる
 
-# on user has joined a channel
-@slack.RTMClient.run_on( event = 'member_joined_channel' )
-def on_member_joined_channel( **payload ):
-    data = payload['data']
-    
-    channel_id = data[ 'channel' ]
-    
-    # for debug
-    print( data )
-    
-    web_client.chat_postMessage( channel = channel_id, text = "Welcome to my channel!" )
+
+# おしゃべり機能
+def oshaberi():
+        oshaberies = [ '今忙しいのよ',
+        'いい子で待ってなさい',
+        'あら、いらっしゃい',
+        '何飲むの？',
+        '鶴は千年...あらヤダ！' ,
+        'キエェェェェェ！！' ,
+        'ご無沙汰ねぇ' ,
+        '注文は決まったの？' ,
+        '・・・・・(無視)' ,
+        'やっぱり福山雅治よねぇ～' ,
+        '飲み足りないから飲んでんの～♪' ,
+        '最近色気づいてきた？' 
+            ]
+        num = random.randint( 0, len( oshaberies ) - 1 )
+        result = oshaberies[ num ]
+        return result
+
 
 # on user has sent a message
 @slack.RTMClient.run_on( event = 'message' )
@@ -97,34 +134,51 @@ def on_message( **payload ):
     channel_id = data[ 'channel' ]
     user_id = data[ 'user' ]
     
-    if 'Hello' in data.get( 'text', [] ):
-        web_client.chat_postMessage( channel = channel_id, text = f"Hi <@{user_id}>!" )
     
     # １．雨ふる？
-    if '雨降る？' in data.get( 'text', [] ):
+    if '!雨降る?' in data.get( 'text', [] ):
         # ２．天気情報を取得する
         is_rain = is_today_rainy()
         # ３．今日が雨か？
         if( is_rain ):
             # ４．３．が雨ならメッセージ
-            msg = "雨が降りそうよ、傘持ってるの？"
-            web_client.chat_postMessage( channel = channel_id, text = msg )
+            msg_weather1 = "雨が降りそうよ、傘持ってるの？"
+            web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
+        else:
+            msg_weather2 ="大丈夫そうよ"
+            web_client.chat_postMessage( channel = channel_id, text = msg_weather2 )
 
-    # 1.＠ニュース
-    if '@ニュース' in data.get( 'text', [] ):
+    # 1.ニュース
+    if '!ニュース' in data.get( 'text', [] ):
         # ２．ニュース情報を取得する
         is_news = is_today_news()
         # ３．今日のニュースをPOST
+        web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
         web_client.chat_postMessage( channel = channel_id, text = is_news )
 
-    # おみくじ
-    if 'subtype' not in data and '占ってください' in data['text']:
+    # 1.鳥おみくじ
+    if '!占ってください' in data.get( 'text', [] ):
         # 2.おみくじ結果を取得
         is_fortunes = is_today_fortunes()
         # 3.おみくじ結果をPOST
         web_client.chat_postMessage( channel = channel_id, text = is_fortunes )
+    
+    # 1.お酒おみくじ
+    if '!お酒' in data.get( 'text', [] ):     
+        # 2.おみくじ結果を取得
+        is_alcohols = is_today_alcohols()
+        # 3.おみくじ結果をPOST
+        web_client.chat_postMessage( channel = channel_id, text = is_alcohols )
+
+    # 1.おしゃべり
+    if '!つる子ママ' in data.get( 'text', [] ):       
+        # 2.おみくじ結果を取得
+        is_oshaberi = oshaberi()
+        # 3.おみくじ結果をPOST
+        web_client.chat_postMessage( channel = channel_id, text = is_oshaberi )
 
 
+    #キック機能
     if '年齢' in data.get( 'text', [] ):
         web_client.channels_kick( channel = channel_id, user = user_id )
 
