@@ -22,7 +22,7 @@ web_client = slack.WebClient( token = user_slack_token )
 
 
 #営業時間
-open_time = 10
+open_time = 18
 close_time = 24
 
 
@@ -152,7 +152,6 @@ def on_message( **payload ):
     if 'subtype' in data:
         return
 
-    channel_id = data[ 'channel' ]
     user_id = data[ 'user' ]
     
     # １．What's the chance of rain today?
@@ -166,10 +165,10 @@ def on_message( **payload ):
             if( is_rain ):
                 # ４．３．It looks like rain
                 msg_weather1 = "雨が降りそうよ、傘持ってるの？"
-                web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
+                web_client.chat_postMessage( channel = "tsuruko_bar", text = msg_weather1 )
             else:
                 msg_weather2 ="大丈夫そうよ"
-                web_client.chat_postMessage( channel = channel_id, text = msg_weather2 )
+                web_client.chat_postMessage( channel = "tsuruko_bar", text = msg_weather2 )
 
     # 1.Get News
     if  '!ニュース' in data.get( 'text', [] ):
@@ -179,8 +178,8 @@ def on_message( **payload ):
         # 3．Get News
             dl_news = Download_news()
             # 4．Post information
-            web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
-            web_client.chat_postMessage( channel = channel_id, text = dl_news )
+            web_client.chat_postMessage( channel = "tsuruko_bar", text = "今日こんな事があったわよ" )
+            web_client.chat_postMessage( channel = "tsuruko_bar", text = dl_news )
    
     # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ):
@@ -190,7 +189,7 @@ def on_message( **payload ):
             # 3.draw a fortune slip
             tel_fortunes = Tell_fortunes()
             # 4.Results
-            web_client.chat_postMessage( channel = channel_id, text = tel_fortunes )
+            web_client.chat_postMessage( channel = "tsuruko_bar", text = tel_fortunes )
 
     # 1.Alcohol fortune
     if '!お酒' in data.get( 'text', [] ):    
@@ -200,7 +199,7 @@ def on_message( **payload ):
             # 3.draw a fortune slip
             rm_alcohols = Recommend_alcohols()
             # 4.Results
-            web_client.chat_postMessage( channel = channel_id, text = rm_alcohols )
+            web_client.chat_postMessage( channel = "tsuruko_bar", text = rm_alcohols )
 
     # 1.Talking
     if '!つる子ママ' in data.get( 'text', [] ):  
@@ -210,7 +209,7 @@ def on_message( **payload ):
             # 2.draw a fortune slip
             talking_to_tsuruko = Talk_to_tsuruko()
             # 3.Results
-            web_client.chat_postMessage( channel = channel_id, text = talking_to_tsuruko )
+            web_client.chat_postMessage( channel = "tsuruko_bar", text = talking_to_tsuruko )
 
 
     #Removes a user from a channel
@@ -219,7 +218,7 @@ def on_message( **payload ):
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
             # 2. Removes a user from a channel
-            web_client.channels_kick( channel = channel_id, user = user_id )
+            web_client.channels_kick( channel = "tsuruko_bar", user = user_id )
 
 
 
