@@ -6,7 +6,6 @@ import datetime
 import settings
 
 from bs4 import BeautifulSoup
-
 # Set API token
 bot_slack_token = settings.xoxb_token
 user_slack_token = settings.xoxp_token
@@ -23,12 +22,12 @@ web_client = slack.WebClient( token = user_slack_token )
 
 
 #営業時間
-open_time = 18
+open_time = 10
 close_time = 24
 
 
 #時間
-def is_today_time():
+def Current_time():
     now = datetime.datetime.now()
     hour_time = now.hour
     return hour_time
@@ -40,7 +39,7 @@ def is_today_time():
 
 
 # Get Weather
-def is_today_rainy():
+def Download_weather():
         url = 'http://weather.livedoor.com/forecast/webservice/json/v1?city=130010'
         api_data = requests.get(url).json()
         print(api_data['title'])
@@ -55,11 +54,11 @@ def is_today_rainy():
 
 
 #　Get News
-def is_today_news():	
+def Download_news():	
     r = requests.get("https://news.yahoo.co.jp/")
-	
+    print(r)
     soup = BeautifulSoup(r.text, "lxml")
-
+    print(soup)
     for b in soup.findAll('ul', {'class':'topicsList_main'}):
         news_list = b.find('a').get('href')  
         print(news_list)
@@ -68,7 +67,7 @@ def is_today_news():
 
 
 # Bird fortune list
-def is_today_fortunes():
+def Tell_fortunes():
         fortunes = [
             '今日の鳥類は！「鶴」よ！ラッキープレイスは「会社」よ。',
             '今日の鳥類は！「インコ」よ！ラッキープレイスは「自宅」よ。',
@@ -94,7 +93,7 @@ def is_today_fortunes():
 
 
 # Alcohol fortune list
-def is_today_alcohols():
+def Recommend_alcohols():
         alcohols = [
             '今日のおすすめはビールよ',
             '今日のおすすめはウィスキーよ',
@@ -122,8 +121,8 @@ def is_today_alcohols():
 
 
 # Talking list
-def oshaberi():
-        oshaberies = [
+def Talk_to_tsuruko():
+        talking_list = [
             '今忙しいのよ',
             'いい子で待ってなさい',
             'あら、いらっしゃい',
@@ -137,8 +136,8 @@ def oshaberi():
             '飲み足りないから飲んでんの～♪' ,
             '最近色気づいてきた？' 
             ]
-        num = random.randint( 0, len( oshaberies ) - 1 )
-        result = oshaberies[ num ]
+        num = random.randint( 0, len( talking_list ) - 1 )
+        result = talking_list[ num ]
         return result
 
 
@@ -159,10 +158,10 @@ def on_message( **payload ):
     # １．What's the chance of rain today?
     if '!雨降る?' in data.get( 'text', [] ):
         # ２．Get Weather
-        is_rain = is_today_rainy()
+        is_rain = Download_weather()
         # 2. Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
             # ３．I wonder if it will rain today?
             if( is_rain ):
                 # ４．３．It looks like rain
@@ -175,50 +174,50 @@ def on_message( **payload ):
     # 1.Get News
     if  '!ニュース' in data.get( 'text', [] ):
         # 2. Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
         # 3．Get News
-            is_news = is_today_news()
+            dl_news = Download_news()
             # 4．Post information
             web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
-            web_client.chat_postMessage( channel = channel_id, text = is_news )
+            web_client.chat_postMessage( channel = channel_id, text = dl_news )
    
     # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ):
         # 2.Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
             # 3.draw a fortune slip
-            is_fortunes = is_today_fortunes()
+            tel_fortunes = Tell_fortunes()
             # 4.Results
-            web_client.chat_postMessage( channel = channel_id, text = is_fortunes )
+            web_client.chat_postMessage( channel = channel_id, text = tel_fortunes )
 
     # 1.Alcohol fortune
     if '!お酒' in data.get( 'text', [] ):    
         # 2.Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
             # 3.draw a fortune slip
-            is_alcohols = is_today_alcohols()
+            rm_alcohols = Recommend_alcohols()
             # 4.Results
-            web_client.chat_postMessage( channel = channel_id, text = is_alcohols )
+            web_client.chat_postMessage( channel = channel_id, text = rm_alcohols )
 
     # 1.Talking
     if '!つる子ママ' in data.get( 'text', [] ):  
         # 2.Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
             # 2.draw a fortune slip
-            is_oshaberi = oshaberi()
+            talking_to_tsuruko = Talk_to_tsuruko()
             # 3.Results
-            web_client.chat_postMessage( channel = channel_id, text = is_oshaberi )
+            web_client.chat_postMessage( channel = channel_id, text = talking_to_tsuruko )
 
 
     #Removes a user from a channel
     if '年齢' in data.get( 'text', [] ):
         # 1.Get time
-        is_time = is_today_time()
-        if open_time <= is_time <= close_time:
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
             # 2. Removes a user from a channel
             web_client.channels_kick( channel = channel_id, user = user_id )
 
