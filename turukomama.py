@@ -20,14 +20,26 @@ channel_id = "CP8FGPD8R"
 rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
 
+# Business hours
+open_time = 18
+close_time = 24
+
 # Menu display at 18:00
 def clock_timer():
     while True:
-        now_time = datetime.datetime.now().strftime("%H:%M:%S") 
         menu_list = "ー今日のおすすめよ♪ー\n1.おすすめのドリンク(「!お酒」)\n2.ママの手料理(「!おなかすいた」)\n3.ママの占い(「!占ってください」\n4.今日のニュース(「!ニュース」\n5.今日の天気(「!雨降る?」)"
+
+        #Get now time
+        now_time = datetime.datetime.now().strftime("%H:%M:%S") 
         print(now_time)
-        if now_time == ("14:37:30") :
+        if now_time == ("18:00:05"):
             web_client.chat_postMessage( channel = channel_id, text = menu_list )
+        
+        elif now_time == ("18:00:00"):
+            post_word = Post_today_word()
+            web_client.chat_postMessage( channel = channel_id, text = post_word )
+
+
 
         time.sleep( 1 )
 
@@ -40,9 +52,6 @@ clock_thread.start()
 #
 
 
-# Business hours
-open_time = 18
-close_time = 24
 
 
 # Get time
@@ -55,6 +64,25 @@ def Current_time():
 # now = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
 # close = datetime(now.year, now.month, now.day, 18, 0, 0)
 # diff = close - now
+
+# Post random word
+def Post_today_word():
+        word_list = [
+            'いらっしゃい',
+            'あら、また来たわね',
+            '今日もお疲れ様',
+            'aaaaa',
+            'bbbbb',
+            'ccccc',
+            'ddddd',
+            'eeeee',
+            'fffff',
+            'ggggg'
+            ]
+        num = random.randint(0, len( word_list )- 1)
+        result = word_list[ num ]
+        return result
+
 
 
 # Get Weather
