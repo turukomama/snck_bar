@@ -4,29 +4,48 @@ import requests
 import random
 import datetime
 import settings
+import datetime
+import time
+import threading
 
 from bs4 import BeautifulSoup
 # Set API token
 bot_slack_token = settings.xoxb_token
 user_slack_token = settings.xoxp_token
 
+# Set channel_id
+channel_id = "CP8FGPD8R"
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
 
+# Menu display at 18:00
+def clock_timer():
+    while True:
+        now_time = datetime.datetime.now().strftime("%H:%M:%S") 
+        menu_list = "ー今日のおすすめよ♪ー\n1.おすすめのドリンク(「!お酒」)\n2.ママの手料理(「!おなかすいた」)\n3.ママの占い(「!占ってください」\n4.今日のニュース(「!ニュース」\n5.今日の天気(「!雨降る?」)"
+        print(now_time)
+        if now_time == ("14:37:30") :
+            web_client.chat_postMessage( channel = channel_id, text = menu_list )
+
+        time.sleep( 1 )
+
+clock_thread = threading.Thread( target = clock_timer )
+clock_thread.daemon = True
+clock_thread.start()
 
 #
 # Declare event hook methods
 #
 
 
-#営業時間
+# Business hours
 open_time = 18
 close_time = 24
 
 
-#時間
+# Get time
 def Current_time():
     now = datetime.datetime.now()
     hour_time = now.hour
@@ -165,10 +184,10 @@ def on_message( **payload ):
             if( is_rain ):
                 # ４．３．It looks like rain
                 msg_weather1 = "雨が降りそうよ、傘持ってるの？"
-                web_client.chat_postMessage( channel = "tsuruko_bar", text = msg_weather1 )
+                web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
             else:
                 msg_weather2 ="大丈夫そうよ"
-                web_client.chat_postMessage( channel = "tsuruko_bar", text = msg_weather2 )
+                web_client.chat_postMessage( channel = channel_id, text = msg_weather2 )
 
     # 1.Get News
     if  '!ニュース' in data.get( 'text', [] ):
@@ -178,8 +197,8 @@ def on_message( **payload ):
         # 3．Get News
             dl_news = Download_news()
             # 4．Post information
-            web_client.chat_postMessage( channel = "tsuruko_bar", text = "今日こんな事があったわよ" )
-            web_client.chat_postMessage( channel = "tsuruko_bar", text = dl_news )
+            web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
+            web_client.chat_postMessage( channel = channel_id, text = dl_news )
    
     # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ):
@@ -189,7 +208,7 @@ def on_message( **payload ):
             # 3.draw a fortune slip
             tel_fortunes = Tell_fortunes()
             # 4.Results
-            web_client.chat_postMessage( channel = "tsuruko_bar", text = tel_fortunes )
+            web_client.chat_postMessage( channel = channel_id, text = tel_fortunes )
 
     # 1.Alcohol fortune
     if '!お酒' in data.get( 'text', [] ):    
@@ -199,7 +218,7 @@ def on_message( **payload ):
             # 3.draw a fortune slip
             rm_alcohols = Recommend_alcohols()
             # 4.Results
-            web_client.chat_postMessage( channel = "tsuruko_bar", text = rm_alcohols )
+            web_client.chat_postMessage( channel = channel_id, text = rm_alcohols )
 
     # 1.Talking
     if '!つる子ママ' in data.get( 'text', [] ):  
@@ -209,7 +228,7 @@ def on_message( **payload ):
             # 2.draw a fortune slip
             talking_to_tsuruko = Talk_to_tsuruko()
             # 3.Results
-            web_client.chat_postMessage( channel = "tsuruko_bar", text = talking_to_tsuruko )
+            web_client.chat_postMessage( channel = channel_id, text = talking_to_tsuruko )
 
 
     #Removes a user from a channel
@@ -218,7 +237,7 @@ def on_message( **payload ):
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
             # 2. Removes a user from a channel
-            web_client.channels_kick( channel = "tsuruko_bar", user = user_id )
+            web_client.channels_kick( channel = channel_id, user = user_id )
 
 
 
