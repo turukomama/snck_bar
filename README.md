@@ -30,10 +30,10 @@ https://api.slack.com/apps
 ### PythonへのGithubのimport   
 $ git clone https://github.com/turukomama/snck_bar  
 ### SlackClientのimport  
-`$ cd snck_bar  
-$ py`  
+`$ cd snck_bar`  
+`$ py`  
 ### settingにAPI tokenをセットする
-`$ cp setting.turuko{.example,}    
-$ vim setting.turuko  `
+`$ cp setting.turuko{.example,}`   
+`$ vim setting.turuko`  
 
 
