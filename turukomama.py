@@ -53,7 +53,6 @@ clock_thread.start()
 
 
 
-
 # Get time
 def Current_time():
     now = datetime.datetime.now()
@@ -130,13 +129,6 @@ def Tell_fortunes():
         num = random.randint( 0, len( fortunes ) - 1 )
         result = fortunes[ num ]
         return result
-        # if num == 0:
-        #     kichi = "大吉"
-        # elif num == 1:
-        #     kichi = "吉"
-        # elif num == 2:
-        #     kichi = "凶"
-        # thread_tsを設定することでスレッドでのリプライになる
 
 
 # Alcohol fortune list
@@ -158,14 +150,6 @@ def Recommend_alcohols():
         num = random.randint( 0, len( alcohols ) - 1 )
         result = alcohols[ num ]
         return result
-        # if num == 0:
-        #     kichi = "大吉"
-        # elif num == 1:
-        #     kichi = "吉"
-        # elif num == 2:
-        #     kichi = "凶"
-        # thread_tsを設定することでスレッドでのリプライになる
-
 
 # Talking list
 def Talk_to_tsuruko():
@@ -186,6 +170,28 @@ def Talk_to_tsuruko():
         num = random.randint( 0, len( talking_list ) - 1 )
         result = talking_list[ num ]
         return result
+
+
+# food list
+client = slack.WebClient(token='xoxb-')
+
+def choice_food():
+    dir_path = 'food'
+    # フォルダ内のファイル・フォルダリストを取得
+    foodfiles = os.listdir( dir_path )
+#    print(foodfiles)
+    # ファイル・フォルダリストからファイル名だけを抜き出し
+    foodfiles_file = [f for f in foodfiles if os.path.isfile(os.path.join( dir_path, f ) )]
+#    print(foodfiles_file)
+    # ファイル名リストからランダムに一つ取得
+    postfile = random.choice(foodfiles_file) 
+#    print(postfile)
+    # ファイル名とフォルダ名を結合（フルパス作成）
+    fullpath = os.path.join(dir_path,postfile)
+    # フルパスを返却
+    return fullpath
+
+#print( choice_food() )
 
 
 # on user has sent a message
@@ -258,6 +264,16 @@ def on_message( **payload ):
             # 3.Results
             web_client.chat_postMessage( channel = channel_id, text = talking_to_tsuruko )
 
+    # 1.Get food
+    if  '!おなかすいた' in data.get( 'text', [] ):
+        # 2. Get time
+        cr_time = Current_time()
+        if open_time <= cr_time <= close_time:
+        # 3.Results
+           response = client.files_upload(
+           channels = '#tsuruko_bar',
+           file = choice_food())
+           assert response["ok"]
 
     #Removes a user from a channel
     if '年齢' in data.get( 'text', [] ):
@@ -266,8 +282,5 @@ def on_message( **payload ):
         if open_time <= cr_time <= close_time:
             # 2. Removes a user from a channel
             web_client.channels_kick( channel = channel_id, user = user_id )
-
-
-
 
 rtm_client.start()
