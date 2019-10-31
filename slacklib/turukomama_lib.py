@@ -21,8 +21,8 @@ rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
 
 # Business hours
-open_time = **
-close_time = *
+open_time = 00
+close_time = 00
 
 # Get time
 def Current_time():
@@ -31,7 +31,7 @@ def Current_time():
     return hour_time
 
 # now = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
-# close = datetime(now.year, now.month, now.day, 18, 0, 0)
+# close = datetime(now.year, now.month, now.day, 00, 0, 0)
 # diff = close - now
 
 
@@ -40,7 +40,7 @@ def Current_time():
 #
 
 
-# Menu display at 18:00
+# Menu display at 00:00
 def clock_timer():
     while True:
         menu_list = "ーmenuー\
@@ -152,7 +152,7 @@ def Recommend_alcohols():
         return result
 
 # Talking list
-def Talk_to_tsuruko():
+def Talk_to():
         talking_list = [
             'TEXT',
             'TEXT',
@@ -178,7 +178,7 @@ client = slack.WebClient(token='xoxb-')
 def choice_file():
     dir_path = 'File'
     # Get a list of files and folders in a folder
-    foodfiles = os.listdir( dir_path )
+    files = os.listdir( dir_path )
     # Extract only file names from file/folder list
     files_file = [f for f in files if os.path.isfile(os.path.join( dir_path, f ) )]
     # Get one randomly from the file name list
