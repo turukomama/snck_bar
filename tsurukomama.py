@@ -19,6 +19,7 @@ channel_id = settings.channel
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
 web_client = slack.WebClient( token = user_slack_token )
+web_client2 = slack.WebClient( token = bot_slack_token )
 
 # Business hours
 open_time = 18
@@ -43,20 +44,14 @@ def Current_time():
 # Menu display at 18:00
 def clock_timer():
     while True:
-        menu_list = "ー今日のおすすめよ♪ー\
-            　　　　　n1.おすすめのドリンク(「!お酒」)\
-            　　　　　n2.ママの手料理(「!おなかすいた」)\
-            　　　　　n3.ママの占い(「!占ってください」)\
-            　　　　　n4.今日のニュース(「!ニュース」)\
-            　　　　　n5.今日の天気(「!雨降る?」)"
-
+        menu_list = "ー今日のおすすめよ♪ー\n1.おすすめのドリンク(「!お酒」)\n2.ママの手料理(「!おなかすいた」)\n3.ママの占い(「!占ってください」)\n4.今日の ュース(「!ニュース」)\n5.今日の天気(「!雨降る?」)"
         #Get now time
-        now_time = datetime.datetime.now().strftime("%H:%M:%S") 
+        now_time = datetime.datetime.now().strftime("%H:%M:%S")
         print(now_time)
-        if now_time == ("10:40:05"):
+        if now_time == ("18:00:05"):
             web_client.chat_postMessage( channel = channel_id, text = menu_list )
-        
-        elif now_time == ("10:40:00"):
+
+        elif now_time == ("18:00:00"):
             post_word = Post_today_word()
             web_client.chat_postMessage( channel = channel_id, text = post_word )
 
@@ -89,7 +84,7 @@ def Download_weather():
         for weather in api_data['forecasts']:
             weather_date = weather['dateLabel']
             weather_forecasts = weather['telop']
-            
+
             if weather_date == "今日" and "雨" in weather_forecasts:
                 return True
             else:
@@ -97,13 +92,13 @@ def Download_weather():
 
 
 #　Get News
-def Download_news():	
+def Download_news():
     r = requests.get("https://news.yahoo.co.jp/")
     print(r)
     soup = BeautifulSoup(r.text, "lxml")
     print(soup)
     for b in soup.findAll('ul', {'class':'topicsList_main'}):
-        news_list = b.find('a').get('href')  
+        news_list = b.find('a').get('href')
         print(news_list)
 
         return news_list
@@ -162,7 +157,7 @@ def Talk_to_tsuruko():
             '・・・・・(無視)' ,
             'やっぱり福山雅治よねぇ～' ,
             '飲み足りないから飲んでんの～♪' ,
-            '最近色気づいてきた？' 
+            '最近色気づいてきた？'
             ]
         num = random.randint( 0, len( talking_list ) - 1 )
         result = talking_list[ num ]
@@ -170,16 +165,16 @@ def Talk_to_tsuruko():
 
 
 # food list
-client = slack.WebClient(token=user_slack_token)
+client = slack.WebClient(token=bot_slack_token)
 
 def choice_food():
-    dir_path = 'C:\\Users\\s.kuwahara\\Desktop\\workspace\\snck_bar_test\\food'
-    # Get a list of files and folders in a folder
+    dir_path = 'food'
+    # フォルダ内のファイル・フォルダリストを取得
     foodfiles = os.listdir( dir_path )
     # Extract only file names from file/folder list
     foodfiles_file = [f for f in foodfiles if os.path.isfile(os.path.join( dir_path, f ) )]
     # Get one randomly from the file name list
-    postfile = random.choice(foodfiles_file) 
+    postfile = random.choice(foodfiles_file)
     # Full path creation
     fullpath = os.path.join(dir_path,postfile)
     # Return the full pathname
@@ -192,15 +187,15 @@ print( choice_food() )
 @slack.RTMClient.run_on( event = 'message' )
 def on_message( **payload ):
     data = payload[ 'data' ]
-    
+
     # for debug
     print( data )
-    
+
     if 'subtype' in data:
         return
 
     user_id = data[ 'user' ]
-    
+
     # １．What's the chance of rain today?
     if '!雨降る?' in data.get( 'text', [] ):
         # ２．Get Weather
@@ -227,7 +222,7 @@ def on_message( **payload ):
             # 4．Post information
             web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )
             web_client.chat_postMessage( channel = channel_id, text = dl_news )
-   
+
     # 1.Bird fortune
     if '!占ってください' in data.get( 'text', [] ):
         # 2.Get time
@@ -239,7 +234,7 @@ def on_message( **payload ):
             web_client.chat_postMessage( channel = channel_id, text = tel_fortunes )
 
     # 1.Alcohol fortune
-    if '!お酒' in data.get( 'text', [] ):    
+    if '!お酒' in data.get( 'text', [] ):
         # 2.Get time
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
@@ -249,7 +244,7 @@ def on_message( **payload ):
             web_client.chat_postMessage( channel = channel_id, text = rm_alcohols )
 
     # 1.Talking
-    if '!つる子ママ' in data.get( 'text', [] ):  
+    if '!つる子ママ' in data.get( 'text', [] ):
         # 2.Get time
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
@@ -264,7 +259,7 @@ def on_message( **payload ):
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
         # 3.Results
-           response = web_client.files_upload(
+           response = web_client2.files_upload(
            channels = channel_id,
            file = choice_food())
            assert response["ok"]
