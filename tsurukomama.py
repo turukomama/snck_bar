@@ -24,10 +24,31 @@ web_client = slack.WebClient( token = user_slack_token )
 open_time = 18
 close_time = 24
 
+# Get time
+def Current_time():
+    now = datetime.datetime.now()
+    hour_time = now.hour
+    return hour_time
+
+# now = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
+# close = datetime(now.year, now.month, now.day, 18, 0, 0)
+# diff = close - now
+
+
+#
+# Declare event hook methods
+#
+
+
 # Menu display at 18:00
 def clock_timer():
     while True:
-        menu_list = "ー今日のおすすめよ♪ー\n1.おすすめのドリンク(「!お酒」)\n2.ママの手料理(「!おなかすいた」)\n3.ママの占い(「!占ってください」\n4.今日のニュース(「!ニュース」\n5.今日の天気(「!雨降る?」)"
+        menu_list = "ー今日のおすすめよ♪ー\
+            　　　　　n1.おすすめのドリンク(「!お酒」)\
+            　　　　　n2.ママの手料理(「!おなかすいた」)\
+            　　　　　n3.ママの占い(「!占ってください」)\
+            　　　　　n4.今日のニュース(「!ニュース」)\
+            　　　　　n5.今日の天気(「!雨降る?」)"
 
         #Get now time
         now_time = datetime.datetime.now().strftime("%H:%M:%S") 
@@ -39,30 +60,12 @@ def clock_timer():
             post_word = Post_today_word()
             web_client.chat_postMessage( channel = channel_id, text = post_word )
 
-
-
         time.sleep( 1 )
 
 clock_thread = threading.Thread( target = clock_timer )
 clock_thread.daemon = True
 clock_thread.start()
 
-#
-# Declare event hook methods
-#
-
-
-
-# Get time
-def Current_time():
-    now = datetime.datetime.now()
-    hour_time = now.hour
-    return hour_time
-
-
-# now = datetime(now.year, now.month, now.day, now.hour, now.minute, 0)
-# close = datetime(now.year, now.month, now.day, 18, 0, 0)
-# diff = close - now
 
 # Post random word
 def Post_today_word():
@@ -76,7 +79,6 @@ def Post_today_word():
         num = random.randint(0, len( word_list )- 1)
         result = word_list[ num ]
         return result
-
 
 
 # Get Weather
@@ -174,16 +176,13 @@ def choice_food():
     dir_path = 'C:\\Users\\s.kuwahara\\Desktop\\workspace\\snck_bar_test\\food'
     # フォルダ内のファイル・フォルダリストを取得
     foodfiles = os.listdir( dir_path )
-#    print(foodfiles)
-    # ファイル・フォルダリストからファイル名だけを抜き出し
+    # Extract only file names from file/folder list
     foodfiles_file = [f for f in foodfiles if os.path.isfile(os.path.join( dir_path, f ) )]
-#    print(foodfiles_file)
-    # ファイル名リストからランダムに一つ取得
+    # Get one randomly from the file name list
     postfile = random.choice(foodfiles_file) 
-#    print(postfile)
-    # ファイル名とフォルダ名を結合（フルパス作成）
+    # Full path creation
     fullpath = os.path.join(dir_path,postfile)
-    # フルパスを返却
+    # Return the full pathname
     return fullpath
 
 print( choice_food() )
@@ -206,12 +205,12 @@ def on_message( **payload ):
     if '!雨降る?' in data.get( 'text', [] ):
         # ２．Get Weather
         is_rain = Download_weather()
-        # 2. Get time
+        # 3. Get time
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
-            # ３．I wonder if it will rain today?
+            # 4．I wonder if it will rain today?
             if( is_rain ):
-                # ４．３．It looks like rain
+            # 5．It looks like rain
                 msg_weather1 = "雨が降りそうよ、傘持ってるの？"
                 web_client.chat_postMessage( channel = channel_id, text = msg_weather1 )
             else:
@@ -223,7 +222,7 @@ def on_message( **payload ):
         # 2. Get time
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
-        # 3．Get News
+            # 3．Get News
             dl_news = Download_news()
             # 4．Post information
             web_client.chat_postMessage( channel = channel_id, text = "今日こんな事があったわよ" )

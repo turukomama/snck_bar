@@ -5,4 +5,4 @@ xoxp_token = " "
 xoxb_token = " "
 
 
-channel = ' '
+channel_id = ' '

@@ -4,7 +4,7 @@
 ### 機能一覧  
 #### 1.チャンネルに常駐してスナックを開店  
 営業時間は18:00~25:00  
-開店時(18:00)にひとことをPOST「いらっしゃい」「」など  
+開店時(18:00)にひとことをPOST「いらっしゃい」「今日もお疲れ様」など  
 営業時間外は無反応  
 #### 2.おしゃべり機能  
 「!つる子ママ」の発言に対して返答してくれる機能  
@@ -31,7 +31,7 @@ https://api.slack.com/apps
 $ git clone https://github.com/turukomama/snck_bar  
 ### SlackClientのimport  
 `$ cd snck_bar`  
-`$ py`  
+`$ py -m pip install slackclient`    
 ### settingにAPI tokenをセットする
 `$ cp setting.turuko{.example,}`   
 `$ vim setting.turuko`  
