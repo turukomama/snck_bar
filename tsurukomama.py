@@ -14,7 +14,7 @@ bot_slack_token = settings.xoxb_token
 user_slack_token = settings.xoxp_token
 
 # Set channel_id
-channel_id = "CP8FGPD8R"
+channel_id = settings.channel
 
 # Create both rtm client and web client
 rtm_client = slack.RTMClient( token = bot_slack_token )
@@ -32,10 +32,10 @@ def clock_timer():
         #Get now time
         now_time = datetime.datetime.now().strftime("%H:%M:%S") 
         print(now_time)
-        if now_time == ("18:00:05"):
+        if now_time == ("10:40:05"):
             web_client.chat_postMessage( channel = channel_id, text = menu_list )
         
-        elif now_time == ("18:00:00"):
+        elif now_time == ("10:40:00"):
             post_word = Post_today_word()
             web_client.chat_postMessage( channel = channel_id, text = post_word )
 
@@ -70,13 +70,8 @@ def Post_today_word():
             'いらっしゃい',
             'あら、また来たわね',
             '今日もお疲れ様',
-            'aaaaa',
-            'bbbbb',
-            'ccccc',
-            'ddddd',
-            'eeeee',
-            'fffff',
-            'ggggg'
+            '今日も顔が死んでるじゃない',
+            'あなたも暇ね～'
             ]
         num = random.randint(0, len( word_list )- 1)
         result = word_list[ num ]
@@ -173,10 +168,10 @@ def Talk_to_tsuruko():
 
 
 # food list
-client = slack.WebClient(token='xoxb-')
+client = slack.WebClient(token=user_slack_token)
 
 def choice_food():
-    dir_path = 'food'
+    dir_path = 'C:\\Users\\s.kuwahara\\Desktop\\workspace\\snck_bar_test\\food'
     # フォルダ内のファイル・フォルダリストを取得
     foodfiles = os.listdir( dir_path )
 #    print(foodfiles)
@@ -191,7 +186,7 @@ def choice_food():
     # フルパスを返却
     return fullpath
 
-#print( choice_food() )
+print( choice_food() )
 
 
 # on user has sent a message
@@ -270,8 +265,8 @@ def on_message( **payload ):
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
         # 3.Results
-           response = client.files_upload(
-           channels = '#tsuruko_bar',
+           response = web_client.files_upload(
+           channels = channel_id,
            file = choice_food())
            assert response["ok"]
 
