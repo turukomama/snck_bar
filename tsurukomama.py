@@ -174,7 +174,7 @@ client = slack.WebClient(token=user_slack_token)
 
 def choice_food():
     dir_path = 'C:\\Users\\s.kuwahara\\Desktop\\workspace\\snck_bar_test\\food'
-    # フォルダ内のファイル・フォルダリストを取得
+    # Get a list of files and folders in a folder
     foodfiles = os.listdir( dir_path )
     # Extract only file names from file/folder list
     foodfiles_file = [f for f in foodfiles if os.path.isfile(os.path.join( dir_path, f ) )]

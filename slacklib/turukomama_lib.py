@@ -152,7 +152,7 @@ def Recommend_alcohols():
         return result
 
 # Talking list
-def Talk_to():
+def Talk_to_tsuruko():
         talking_list = [
             'TEXT',
             'TEXT',
@@ -173,16 +173,16 @@ def Talk_to():
 
 
 # food list
-client = slack.WebClient(token='xoxb-')
+client = slack.WebClient(token='xoxb_token')
 
-def choice_file():
-    dir_path = 'File'
+def choice_food():
+    dir_path = 'food'
     # Get a list of files and folders in a folder
-    files = os.listdir( dir_path )
+    foodfiles = os.listdir( dir_path )
     # Extract only file names from file/folder list
-    files_file = [f for f in files if os.path.isfile(os.path.join( dir_path, f ) )]
+    foodfiles_file = [f for f in foodfiles if os.path.isfile(os.path.join( dir_path, f ) )]
     # Get one randomly from the file name list
-    postfile = random.choice(files_file) 
+    postfile = random.choice(foodfiles_file) 
     # Full path creation
     fullpath = os.path.join(dir_path,postfile)
     # Return the full pathname
@@ -255,9 +255,9 @@ def on_message( **payload ):
         cr_time = Current_time()
         if open_time <= cr_time <= close_time:
             # 2.draw a fortune slip
-            talking_to = Talk_to()
+            talking_to_tsuruko = Talk_to_tsuruko()
             # 3.Results
-            web_client.chat_postMessage( channel = channel_id, text = talking_to )
+            web_client.chat_postMessage( channel = channel_id, text = talking_to_tsuruko )
 
     # 1.Get food
     if  '!TEXT' in data.get( 'text', [] ):
@@ -267,7 +267,7 @@ def on_message( **payload ):
         # 3.Results
            response = client.files_upload(
            channels = 'channel',
-           file = choice_file())
+           file = choice_food())
            assert response["ok"]
 
     #Removes a user from a channel
